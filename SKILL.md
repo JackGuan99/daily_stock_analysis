@@ -7,6 +7,16 @@ description: "分析股票和市场。当用户想要分析单个或多个股票
 
 本技能基于 `src/services/analyzer_service.py` 的逻辑，提供分析股票和整体市场的功能。
 
+## Codex 本地运行 / Local execution
+
+- 以本文件所在的仓库根目录为工作目录，使用该目录的 `.venv`；不要假设还有一层 `repo/`。全局 Skill 注册应链接到本仓库，使指令与源码保持同一份。
+- Windows 入口为 `./run.ps1`：使用根目录 `.venv` 和 `.env`，无参数时只显示帮助。安装检查使用 `./run.ps1 --help`，不调用下文的分析函数。
+- 直接调用 Python 服务时，先将工作目录设为仓库根目录，并在导入服务前设置 `ENV_FILE` 指向根目录 `.env`。分析前检查所选模型后端与凭据是否已配置；缺失时说明所需配置，不编造分析结果。
+- `--dry-run` 会获取数据，启用的大盘复盘仍可能调用模型，不能用于“无 API 调用”的安装验证。`--no-notify` 不保证禁止飞书云文档创建；`perform_market_review(notifier=None)` 也可能使用配置中的通知服务。仅在用户授权相应外部动作时启用通知或云文档配置。
+- 安装、目录与缓存配置、全局注册和 fork 工作流见 [Codex 本地配置](docs/codex-local-setup.md)。
+
+Run from the repository root with its `.venv`. `./run.ps1` defaults to help; use `--help` for installation checks. Configure the selected backend before analysis. `--dry-run` is not an offline check, and notification flags do not disable every external write. See the bilingual setup guide linked above.
+
 ## 输出结构 (`AnalysisResult`)
 
 分析函数返回一个 `AnalysisResult` 对象（或其列表），该对象具有丰富的结构。以下是其关键组件的简要概述，并附有真实的输出示例：
